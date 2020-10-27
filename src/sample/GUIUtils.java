@@ -1,4 +1,6 @@
 package sample;
+
+import javafx.event.EventHandler;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -22,7 +24,7 @@ public class GUIUtils {
                             double calcwidth = text.getLayoutBounds().getWidth();
                             double cellWidth = getTableColumn().getWidth();
 
-                            double cellWidthRatio = Math.ceil( calcwidth / cellWidth );
+                            double cellWidthRatio = Math.ceil(calcwidth / cellWidth);
                             if (cellWidthRatio > 1.0) {
                                 setPrefHeight(30 * cellWidthRatio);
                             }

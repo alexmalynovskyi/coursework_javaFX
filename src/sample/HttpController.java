@@ -3,7 +3,9 @@ package sample;
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 public class HttpController {
     private HttpURLConnection connection;
@@ -26,40 +28,102 @@ public class HttpController {
     }
 
     private void setRequestProperties() {
-        connection.setRequestProperty("Content-Type", "application/json; utf-8");
-        connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
+        connection.setRequestProperty("Connection", "keep-alive");
+        connection.setRequestProperty("Accept", "*/*");
+        connection.setRequestProperty("Host", "justin.ua");
+        connection.setRequestProperty("Origin", "https://justin.ua");
     }
 
     private void setRequestMethod() throws ProtocolException {
         connection.setRequestMethod(method);
     }
 
-    public String send(String ttn) throws IOException {
-        URLConnection yc = url.openConnection();
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
+    public Map<String, String> sendGet(String url) throws IOException {
 
-        return content.toString();
+        HttpURLConnection httpClient =
+                (HttpURLConnection) new URL(url).openConnection();
+
+        httpClient.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+        httpClient.setRequestProperty("Content-Type", "text/html; charset=UTF-8");
+        httpClient.setRequestProperty("Accept-Encoding", "utf8");
+        httpClient.setRequestProperty("Accept", "*/*");
+        httpClient.setRequestProperty("Connection", "keep-alive");
+
+        // optional default is GET
+        httpClient.setRequestMethod("GET");
+
+        int responseCode = httpClient.getResponseCode();
+        Map<String, List<String>> headerFields = httpClient.getHeaderFields();
+        List<String> cookiesHeader = headerFields.get("Set-Cookie");
+        Map<String, String> responseMap = new HashMap<>();
+        if(cookiesHeader != null){
+            String sessionCookie = cookiesHeader.get(0);
+            String csrfTokenCookie = cookiesHeader.get(1);
+            responseMap.put("sessionCookie", sessionCookie);
+            responseMap.put("csrfToken", csrfTokenCookie);
+        }
+
+        System.out.println("get response code : " + responseCode);
+
+        StringBuilder response = new StringBuilder();
+        String line;
+
+        Reader reader = null;
+        if ("gzip".equals(httpClient.getContentEncoding())) {
+            reader = new InputStreamReader(new GZIPInputStream(httpClient.getInputStream()));
+        }
+        else {
+            reader = new InputStreamReader(httpClient.getInputStream());
+        }
+
+        while (true) {
+            int ch = reader.read();
+            if (ch==-1) {
+                break;
+            }
+            response.append((char)ch);
+        }
+//        try (BufferedReader in = new BufferedReader(
+//                new InputStreamReader(httpClient.getInputStream()))) {
+//            while ((line = in.readLine()) != null) {
+//                response.append(line);
+//            }
+//
+//            //print result
+//            System.out.println(response.toString());
+//
+//        }
+
+        responseMap.put("response", response.toString());
+        return responseMap;
     }
+    public String sendPost(String jsonPayload, Map<String, String> cookieHash) throws IOException {
+        String  sessionCookie = cookieHash.get("sessionCookie").split(" ", 0)[0];
+        String  csrfCookie = cookieHash.get("csrfToken").split(" ", 0)[0];
+        String cookie = csrfCookie + " " + sessionCookie .substring(0, sessionCookie.length() - 1);
 
-    public StringBuffer getResponse() throws IOException {
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        connection.setRequestProperty("Cookie", cookie);
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+
+        try(OutputStream os = connection.getOutputStream()){
+            byte[] input = jsonPayload.getBytes("utf-8");
+            os.write(input, 0, input.length);
         }
-        in.close();
-        connection.disconnect();
 
+        int code = connection.getResponseCode();
+        System.out.println(code);
 
-        return content;
+        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+        StringBuilder response = new StringBuilder();
+        String responseLine = null;
+        while ((responseLine = br.readLine()) != null) {
+            response.append(responseLine.trim());
+        }
+        System.out.println(response + " RESPONSE");
+        return response.toString();
     }
 }

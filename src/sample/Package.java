@@ -21,6 +21,7 @@ public class Package implements ObservableArray<Package> {
     private String date;
     private String status;
     private String text;
+    private String updatedAt;
 
     public String getCode() {
         return code;
@@ -61,12 +62,14 @@ public class Package implements ObservableArray<Package> {
         return text;
     }
 
-    public Package(String code, String description, String date, String status, String text) {
+    public String getUpdatedAt() { return updatedAt; };
+
+    public Package(String code, String description, String date, String status, String text, String updatedAt) {
         this.code = code;
         this.description = description;
         this.date = date;
         this.status = status;
-        this.text = text;
+        this.updatedAt = updatedAt;
     }
 
     public String getDescription() {
