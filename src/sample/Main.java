@@ -3,6 +3,7 @@ package sample;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -12,7 +13,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import tray.notification.NotificationType;
+import tray.notification.TrayNotification;
 
+import javax.management.Notification;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +39,7 @@ public class Main extends Application {
         Controller controller = (Controller) loader.getController();
 
         service = new UpdateCheckService(controller);
-        service.setPeriod(Duration.seconds(5));
+        service.setPeriod(Duration.minutes(1));
 
         Label resultLabel = new Label();
         service.setOnRunning(e -> resultLabel.setText(null));
@@ -81,7 +85,24 @@ public class Main extends Application {
                         String title = responseParser.getсClassContent(".title");
                         String date = responseParser.getсClassContent(".date");
                         String textStatus = responseParser.getсClassContent(".text");
-//            String reponseHtml = jsonObject.get("html").getAsString();
+
+                        if (pck.getText() == textStatus || pck.getText() != textStatus) {
+                            try {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String notificationTitle = "justin app";
+                                        String message = "Посилка ttn з номером " + pck.getCode() + " змінила статус.";
+
+                                        TrayNotification tray = new TrayNotification(notificationTitle, message, NotificationType.SUCCESS);
+                                        tray.showAndWait();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
                         Package pack = new Package(
                                 pck.getCode(),
                                 pck.getDescription(),

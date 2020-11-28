@@ -161,6 +161,9 @@ public class Controller {
     public void handleDeleteSelectedItem() {
         Package selectedItem = table.getSelectionModel().getSelectedItem();
         table.getItems().remove(selectedItem);
+
+        Package extendedRowSelectedItem = extendedTable.getSelectionModel().getSelectedItem();
+        extendedTable.getItems().remove(extendedRowSelectedItem);
     }
 
     public void handleShowAll() {
@@ -212,7 +215,7 @@ public class Controller {
     public String getHttpResponse(String ttnNumber) throws IOException {
         HttpController controller = new HttpController("https://justin.ua/tracking", "post");
         Map<String, String> responseHash = controller.sendGet("https://justin.ua/tracking");
-        System.out.println("==================================3 " + responseHash.get("response"));
+        System.out.println("==================================4 " + responseHash.get("response"));
         HtmlParser htmlParser = new HtmlParser(responseHash.get("response"));
         String token = htmlParser.getTagContent("meta[name=\"csrf-token\"]");
         Map<String, String> postParams = new LinkedHashMap<>();
