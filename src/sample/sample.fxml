@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <AnchorPane maxHeight="697.0" maxWidth="1084.0" prefHeight="697.0" prefWidth="1002.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <SplitPane dividerPositions="0.28586278586278585" layoutX="-6.0" layoutY="-3.0" prefHeight="647.0" prefWidth="1011.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.28586278586278585" prefHeight="647.0" prefWidth="1011.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <items>
             <AnchorPane maxHeight="700.0" maxWidth="300.0" minHeight="0.0" minWidth="0.0" prefHeight="448.0" prefWidth="97.0">
                <children>
-                  <VBox prefHeight="645.0" prefWidth="274.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="0.0">
+                  <VBox prefHeight="645.0" prefWidth="274.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <TableView fx:id="table" prefHeight="401.0" prefWidth="274.0" />
+                        <AnchorPane prefHeight="397.0" prefWidth="287.0">
+                           <children>
+                              <TableView fx:id="table" layoutX="-1.0" prefHeight="292.0" prefWidth="287.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
                         <Pane prefHeight="257.0" prefWidth="274.0">
                            <children>
                               <Button layoutX="14.0" layoutY="20.0" mnemonicParsing="false" onMouseClicked="#handleDeleteAll" prefHeight="27.0" prefWidth="95.0" text="Delete all" />
@@ -31,7 +29,7 @@
                                     <Button layoutX="20.0" layoutY="91.0" mnemonicParsing="false" onMouseClicked="#handleAddItem" prefHeight="27.0" prefWidth="235.0" text="Add item" />
                                  </children>
                               </Pane>
-                              <Button layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onMouseClicked="#handleShowAll" prefHeight="27.0" prefWidth="95.0" text="Show all" />
+                              <Button layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onMouseClicked="#handleShowAll" prefHeight="27.0" prefWidth="246.0" text="Show all" />
                            </children>
                         </Pane>
                      </children>

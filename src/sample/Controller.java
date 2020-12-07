@@ -50,8 +50,6 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println(applicationDataJson);
     }
 
     private void loadData() {
@@ -66,7 +64,6 @@ public class Controller {
             }
             Gson gson = new Gson();
 
-            System.out.println(savedDataJson);
             packages.addAll(gson.fromJson(savedDataJson, Package[].class));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -164,6 +161,7 @@ public class Controller {
 
         Package extendedRowSelectedItem = extendedTable.getSelectionModel().getSelectedItem();
         extendedTable.getItems().remove(extendedRowSelectedItem);
+        saveData();
     }
 
     public void handleShowAll() {
@@ -181,6 +179,7 @@ public class Controller {
 
     public void handleDeleteAll() {
         clearAllTables();
+        saveData();
     }
 
     private void clearAllTables() {
@@ -215,17 +214,14 @@ public class Controller {
     public String getHttpResponse(String ttnNumber) throws IOException {
         HttpController controller = new HttpController("https://justin.ua/tracking", "post");
         Map<String, String> responseHash = controller.sendGet("https://justin.ua/tracking");
-        System.out.println("==================================4 " + responseHash.get("response"));
         HtmlParser htmlParser = new HtmlParser(responseHash.get("response"));
         String token = htmlParser.getTagContent("meta[name=\"csrf-token\"]");
         Map<String, String> postParams = new LinkedHashMap<>();
-        System.out.println("TOKEN : " + token);
         postParams.put("_token", token);
         postParams.put("number", ttnNumber);
         String jsonPayload = (new Gson()).toJson(postParams);
 
         String str = controller.sendPost(jsonPayload, responseHash);
-        System.out.println(str +  "    output Post string!!!!");
         return str;
     }
 }

@@ -66,8 +66,6 @@ public class HttpController {
             responseMap.put("csrfToken", csrfTokenCookie);
         }
 
-        System.out.println("get response code : " + responseCode);
-
         StringBuilder response = new StringBuilder();
         String line;
 
@@ -86,16 +84,6 @@ public class HttpController {
             }
             response.append((char)ch);
         }
-//        try (BufferedReader in = new BufferedReader(
-//                new InputStreamReader(httpClient.getInputStream()))) {
-//            while ((line = in.readLine()) != null) {
-//                response.append(line);
-//            }
-//
-//            //print result
-//            System.out.println(response.toString());
-//
-//        }
 
         responseMap.put("response", response.toString());
         return responseMap;
@@ -115,7 +103,6 @@ public class HttpController {
         }
 
         int code = connection.getResponseCode();
-        System.out.println(code);
 
         BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
         StringBuilder response = new StringBuilder();
@@ -123,7 +110,6 @@ public class HttpController {
         while ((responseLine = br.readLine()) != null) {
             response.append(responseLine.trim());
         }
-        System.out.println(response + " RESPONSE");
         return response.toString();
     }
 }
